@@ -57,6 +57,8 @@ Open this link in your browser to interact with the smart contract.
 You can use the frontend to perform the following actions:
 
 **Mint Tokens:** Mint new tokens to your account (only contract owner).
+
 **Burn Tokens:** Burn tokens from your account.
+
 **Transfer Tokens:** Transfer tokens to another account.
 
