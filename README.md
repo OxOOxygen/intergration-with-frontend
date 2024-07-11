@@ -13,7 +13,7 @@ This project contains a smart contract written in Solidity for minting, burning,
 Clone the project repository to your local machine:
 
 ```sh
-git clone <repository-url>
+git clone <repository-url> ```
 
 # Step 2: Install Dependencies
 Open a terminal and run the following command to install the required dependencies:
