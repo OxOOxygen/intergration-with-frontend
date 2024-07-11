@@ -31,7 +31,7 @@ Open a new terminal and start the Hardhat local node:
 npx hardhat node
 ```
 
-**After starting the node, you will see a list of generated wallet addresses and private keys. Import one of these accounts into your MetaMask wallet and connect it to the local network.**
+After starting the node, you will see a list of generated wallet addresses and private keys. Import one of these accounts into your MetaMask wallet and connect it to the local network.
 
 ### Step 4: Deploy the Contract
 In another terminal, deploy the smart contract to the local Hardhat network:
