@@ -1,13 +1,17 @@
- // SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
 contract Assessment {
     address public owner;
+    uint256 public tokenPrice = 0.00000000000000001 ether; // Price per token
     mapping(address => uint256) public balances;
+    mapping(address => uint256) public stakedBalances;
 
-    event Minted(address indexed account, uint256 amt);
-    event Burned(address indexed account, uint256 amt);
+    event Bought(address indexed buyer, uint256 amt);
+    event Sold(address indexed seller, uint256 amt);
     event Transferred(address indexed sender, address indexed receiver, uint256 amt);
+    event Staked(address indexed staker, uint256 amt);
+    event Unstaked(address indexed unstaker, uint256 amt);
 
     constructor() {
         owner = msg.sender;
@@ -18,20 +22,23 @@ contract Assessment {
         _;
     }
 
-    function mint(uint256 amt) external onlyOwner payable {
-        require(amt > 0, "Amount to mint must be greater than 0");
+    function buy(uint256 amt) external payable {
+        require(msg.value == amt * tokenPrice, "Incorrect Ether value sent");
         balances[msg.sender] += amt;
-        emit Minted(msg.sender, amt);
+        emit Bought(msg.sender, amt);
+    }
+
+    function sell(uint256 amt) external {
+        require(balances[msg.sender] >= amt, "Not enough tokens to sell");
+        require(address(this).balance >= amt * tokenPrice, "Not enough Ether in the contract");
+
+        balances[msg.sender] -= amt;
+        payable(msg.sender).transfer(amt * tokenPrice);
+        emit Sold(msg.sender, amt);
     }
 
     function getBalance() external view returns (uint256) {
         return balances[msg.sender];
-    }
-
-    function burn(uint256 amt) external {
-        require(balances[msg.sender] >= amt, "Not enough tokens to burn");
-        balances[msg.sender] -= amt;
-        emit Burned(msg.sender, amt);
     }
 
     function transfer(address receiver, uint256 amt) external {
@@ -41,5 +48,25 @@ contract Assessment {
         balances[msg.sender] -= amt;
         balances[receiver] += amt;
         emit Transferred(msg.sender, receiver, amt);
+    }
+
+    function stake(uint256 amt) external {
+        require(balances[msg.sender] >= amt, "Not enough tokens to stake");
+
+        balances[msg.sender] -= amt;
+        stakedBalances[msg.sender] += amt;
+        emit Staked(msg.sender, amt);
+    }
+
+    function unstake(uint256 amt) external {
+        require(stakedBalances[msg.sender] >= amt, "Not enough tokens to unstake");
+
+        stakedBalances[msg.sender] -= amt;
+        balances[msg.sender] += amt;
+        emit Unstaked(msg.sender, amt);
+    }
+
+    function getStakedBalance() external view returns (uint256) {
+        return stakedBalances[msg.sender];
     }
 }
